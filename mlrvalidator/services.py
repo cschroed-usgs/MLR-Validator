@@ -110,7 +110,7 @@ def _validate_response(req_json, update=False):
         raise BadRequest
     ddot_location = req_json.get('ddotLocation')
     existing_location = req_json.get('existingLocation')
-    no_errors = error_validator.validate(ddot_location, existing_location, update=update)
+    no_errors = error_validator.validate(ddot_location, existing_location)
     no_warnings = warning_validator.validate(ddot_location, existing_location)
 
     response = {}

@@ -26,11 +26,11 @@ class ErrorValidatorErrorsTestCase(TestCase):
         msingle_field.errors = {}
 
         validator = ErrorValidator('schema_dir', 'ref_dir')
-        result = validator.validate({'A' : 'This', 'B' : 'That'}, {})
+        result = validator.validate({'A': 'This', 'B': 'That'}, {})
         self.assertTrue(result)
         self.assertEqual(len(validator.errors), 0)
 
-        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'}, update=True)
+        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'})
         self.assertTrue(result)
         self.assertEqual(len(validator.errors), 0)
 
@@ -55,7 +55,7 @@ class ErrorValidatorErrorsTestCase(TestCase):
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('A', validator.errors)
 
-        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'}, update=True)
+        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'})
         self.assertFalse(result)
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('A', validator.errors)
@@ -81,7 +81,7 @@ class ErrorValidatorErrorsTestCase(TestCase):
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('B', validator.errors)
 
-        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'}, update=True)
+        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'})
         self.assertFalse(result)
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('B', validator.errors)
@@ -107,7 +107,7 @@ class ErrorValidatorErrorsTestCase(TestCase):
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('B', validator.errors)
 
-        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'}, update=True)
+        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'})
         self.assertFalse(result)
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('B', validator.errors)
@@ -128,11 +128,11 @@ class ErrorValidatorErrorsTestCase(TestCase):
         msingle_field.errors = {}
 
         validator = ErrorValidator('schema_dir', 'ref_dir')
-        result = validator.validate({'A': 'This', 'B': 'That'}, {})
+        result = validator.validate({'A': 'This', 'B': 'That'})
         self.assertTrue(result)
         self.assertEqual(len(validator.errors), 0)
 
-        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'}, update=True)
+        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'})
         self.assertFalse(result)
         self.assertEqual(len(validator.errors), 1)
         self.assertIn('B', validator.errors)
@@ -152,19 +152,19 @@ class ErrorValidatorErrorsTestCase(TestCase):
         msingle_field.validate.return_value = False
         msingle_field.errors = {'B': ['Missing']}
         validator = ErrorValidator('schema_dir', 'ref_dir')
-        result = validator.validate({'A': 'This', 'B': 'That'}, {})
+        result = validator.validate({'A': 'This', 'B': 'That'})
         self.assertFalse(result)
         self.assertEqual(len(validator.errors), 2)
         self.assertEqual(len(validator.errors.get('A')), 1)
         self.assertEqual(len(validator.errors.get('B')), 2)
 
-        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'}, update=True)
+        result = validator.validate({'A': 'This', 'B': 'That'}, {'B': 'Them'})
         self.assertFalse(result)
         self.assertEqual(len(validator.errors), 2)
         self.assertEqual(len(validator.errors.get('A')), 1)
         self.assertEqual(len(validator.errors.get('B')), 3)
 
-    def test_duplicate_site_error(self, mtran_class, mref_class, mcross_class, msingle_field_class):
+    def test_identity_update(self, mtran_class, mref_class, mcross_class, msingle_field_class):
         mtran = mtran_class.return_value
         mref = mref_class.return_value
         mcross = mcross_class.return_value
@@ -180,9 +180,11 @@ class ErrorValidatorErrorsTestCase(TestCase):
         msingle_field.errors = {}
 
         validator = ErrorValidator('schema_dir', 'ref_dir')
-        self.assertFalse(validator.validate({'agencyCode': 'USGS', 'siteNumber': '12345678'}, {'agencyCode': 'USGS', 'siteNumber': '12345678'}))
-        self.assertEqual(len(validator.errors), 1)
-        self.assertTrue('duplicate_site' in validator.errors)
+        # it is valid for a valid site to update to an identical version of itself.
+        self.assertTrue(validator.validate({'agencyCode': 'USGS', 'siteNumber': '12345678'},
+                                            {'agencyCode': 'USGS', 'siteNumber': '12345678'}))
+        self.assertEqual(len(validator.errors), 0)
+        self.assertFalse('duplicate_site' in validator.errors)
 
 
 

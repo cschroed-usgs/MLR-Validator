@@ -9,6 +9,8 @@ class BaseCrossFieldValidator:
 
     def validate(self, document, existing_document):
         self.document = document
+        if None == existing_document:
+            existing_document = {}
         self.existing_document = existing_document
         self.merged_document = existing_document.copy()
         self.merged_document.update(document)

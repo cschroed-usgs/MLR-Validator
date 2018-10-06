@@ -39,7 +39,7 @@ class AddValidateTransactionTestCase(TestCase):
                                         headers={'Authorization': 'Bearer {0}'.format(good_token.decode('utf-8'))},
                                         data=json.dumps(self.location))
         self.assertEqual(response.status_code, 200)
-        merror_validator.validate.assert_called_with(self.location.get('ddotLocation'), {}, update=False)
+        merror_validator.validate.assert_called_with(self.location.get('ddotLocation'), {})
         mwarning_validator.validate.assert_called_with(self.location.get('ddotLocation'), {})
         resp_data = json.loads(response.data)
         self.assertEqual(len(resp_data), 1)
@@ -166,7 +166,7 @@ class UpdateValidateTransactionTestCase(TestCase):
                                         headers={'Authorization': 'Bearer {0}'.format(good_token.decode('utf-8'))},
                                         data=json.dumps(self.location))
         self.assertEqual(response.status_code, 200)
-        merror_validator.validate.assert_called_with(self.location.get('ddotLocation'), self.location.get('existingLocation'), update=True)
+        merror_validator.validate.assert_called_with(self.location.get('ddotLocation'), self.location.get('existingLocation'))
         mwarning_validator.validate.assert_called_with(self.location.get('ddotLocation'), self.location.get('existingLocation'))
         resp_data = json.loads(response.data)
         self.assertEqual(len(resp_data), 1)
