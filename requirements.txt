@@ -20,7 +20,6 @@ python-dateutil==2.6.1
 pytz==2017.2
 PyYAML==3.12
 requests==2.20.0
-requests-mock==1.5.2
 six==1.10.0
 urllib3==1.22
 Werkzeug==0.12.2
