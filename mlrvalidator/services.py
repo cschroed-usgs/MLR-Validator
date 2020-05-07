@@ -1,3 +1,4 @@
+import time
 
 import pkg_resources
 
@@ -5,11 +6,14 @@ from flask import request
 from flask_restplus import Api, Resource, fields
 from werkzeug.exceptions import BadRequest
 
-from app import application, error_validator, warning_validator
+from app import application
 from .flask_restplus_jwt import JWTRestplusManager, jwt_required
 
 
 # This will add the Authorize button to the swagger docs
+from .validators.error_validator import ErrorValidator
+from .validators.warning_validator import WarningValidator
+
 authorizations = {
     'apikey': {
         'type': 'apiKey',
@@ -114,6 +118,13 @@ def _validate_response(req_json, update=False):
         raise BadRequest('Request is missing required components (ddotLocation and/or existingLocation).')
     ddot_location = req_json.get('ddotLocation')
     existing_location = req_json.get('existingLocation')
+
+    start = time.time()
+    error_validator = ErrorValidator(application.config['SCHEMA_DIR'], application.config['REFERENCE_FILE_DIR'])
+    warning_validator = WarningValidator(application.config['SCHEMA_DIR'], application.config['REFERENCE_FILE_DIR'])
+    validator_setup_time = time.time() - start
+    print("Validator setup completed in %s seconds", validator_setup_time)
+
     no_errors = error_validator.validate(ddot_location, existing_location, update=update)
     no_warnings = warning_validator.validate(ddot_location, existing_location)
 

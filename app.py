@@ -4,8 +4,6 @@ import json
 
 from flask import Flask
 from jwt.algorithms import RSAAlgorithm
-from mlrvalidator.validators.error_validator import ErrorValidator
-from mlrvalidator.validators.warning_validator import WarningValidator
 
 application = Flask(__name__)
 
@@ -29,8 +27,7 @@ elif application.config.get('AUTH_TOKEN_KEY_URL'):
     application.config['JWT_PUBLIC_KEY'] = resp.json()['value']
     application.config['JWT_ALGORITHM'] = 'RS256'
 
-error_validator = ErrorValidator(application.config['SCHEMA_DIR'], application.config['REFERENCE_FILE_DIR'])
-warning_validator = WarningValidator(application.config['SCHEMA_DIR'], application.config['REFERENCE_FILE_DIR'])
+
 
 
 from mlrvalidator.services import *
