@@ -36,7 +36,7 @@ python 3 and virtualenv installed.
 % env/bin/pip install -r requirements.txt
 ```
 
-### Reference List Files
+### Reference Lists
 
 In order to run the app or the tests, external reference list files must be placed in the `mlrvalidator/references/remote` directory.
 If you have the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and [saml2aws](https://github.com/Versent/saml2aws) installed, run this from the repo root to get started:

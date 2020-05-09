@@ -5,8 +5,8 @@ import jwt
 
 import app
 
-@mock.patch('mlrvalidator.services.warning_validator')
-@mock.patch('mlrvalidator.services.error_validator')
+@mock.patch('mlrvalidator.validators.warning_validator')
+@mock.patch('mlrvalidator.validators.error_validator')
 class AddValidateTransactionTestCase(TestCase):
 
     def setUp(self):

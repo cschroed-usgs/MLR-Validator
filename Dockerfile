@@ -23,7 +23,13 @@ COPY --chown=1000:1000 *.py /build/
 COPY --chown=1000:1000 mlrvalidator /build/mlrvalidator
 COPY --chown=1000:1000 json_population_scripts /build/json_population_scripts
 
-RUN env/bin/python -m unittest && env/bin/python setup.py bdist_wheel
+RUN env/bin/python -m unittest
+
+# After unit tests complete successfully, remove remote reference lists
+# The user will need to mount those files at runtime
+RUN rm -rf mlrvalidator/references/remote/*
+
+RUN env/bin/python setup.py bdist_wheel
 
 FROM artifactory.wma.chs.usgs.gov/wma-docker/mlr/mlr-python-base-docker:latest
 LABEL maintainer="gs-w_eto_eb_federal_employees@usgs.gov"
@@ -36,6 +42,6 @@ ENV artifact_id=usgs-wma-mlr-validator
 
 COPY --chown=1000:1000 --from=build /build/dist/*.whl .
 
-RUN pip3 install --no-cache-dir --quiet --user ./*.whl
+RUN unzip *.whl
 
 HEALTHCHECK CMD curl -k ${protocol}://127.0.0.1:${listening_port}/version | grep -q "\"artifact\": \"${artifact_id}\"" || exit 1

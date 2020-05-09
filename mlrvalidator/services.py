@@ -123,7 +123,7 @@ def _validate_response(req_json, update=False):
     error_validator = ErrorValidator(application.config['SCHEMA_DIR'], application.config['REFERENCE_FILE_DIR'])
     warning_validator = WarningValidator(application.config['SCHEMA_DIR'], application.config['REFERENCE_FILE_DIR'])
     validator_setup_time = time.time() - start
-    print("Validator setup completed in %s seconds", validator_setup_time)
+    print("Validator setup completed in {} seconds".format(validator_setup_time))
 
     no_errors = error_validator.validate(ddot_location, existing_location, update=update)
     no_warnings = warning_validator.validate(ddot_location, existing_location)
